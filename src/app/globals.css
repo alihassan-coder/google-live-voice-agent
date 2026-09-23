@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/*
+  Design tokens. Warm paper + ink, one working accent per trade.
+  Roofing = safety orange, water damage = deep water blue (swapped via [data-niche]).
+*/
+@theme {
+  --color-paper: #f5f1ea;
+  --color-paper-2: #ece6da;
+  --color-card: #fbf9f5;
+  --color-ink: #1b1916;
+  --color-ink-2: #4a453e;
+  --color-ink-3: #7a7368;
+  --color-line: #dcd4c6;
+  --color-line-2: #c9bfae;
+
+  --color-night: #151412;
+  --color-night-2: #22201c;
+  --color-night-3: #2e2b26;
+  --color-night-line: #3a362f;
+  --color-night-ink: #efe9df;
+  --color-night-ink-2: #a79f92;
+
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-good: #2f7a4b;
+  --color-good-soft: #dcefe2;
+  --color-warn: #b42318;
+  --color-warn-soft: #fbe1de;
+  --color-amber: #b7791f;
+  --color-amber-soft: #f8ebd3;
+
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+
+  --radius-card: 14px;
+  --shadow-card: 0 1px 0 rgb(27 25 22 / 0.04), 0 8px 24px -12px rgb(27 25 22 / 0.18);
+  --shadow-lift: 0 1px 0 rgb(27 25 22 / 0.05), 0 24px 48px -24px rgb(27 25 22 / 0.35);
+
+  --animate-pulse-ring: pulse-ring 1.8s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  @keyframes pulse-ring {
+    0% { transform: scale(0.9); opacity: 0.55; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+}
+
+:root,
+[data-niche="roofing"] {
+  --accent: #c2410c;
+  --accent-strong: #9a3412;
+  --accent-soft: #fbe4d5;
+}
+
+[data-niche="water"] {
+  --accent: #1d5c8c;
+  --accent-strong: #154468;
+  --accent-soft: #dde9f3;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--color-ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@utility tabular {
+  font-variant-numeric: tabular-nums;
+}
