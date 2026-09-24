@@ -1,39 +1,13 @@
 import { GoogleGenAI } from "@google/genai";
 import { buildLiveConfig, LIVE_API_VERSION, LIVE_MODEL, MAX_CALL_SECONDS } from "@/server/live-session";
 import { personas, type NicheId } from "@/lib/demo/personas";
+import { clientIp, createRateLimiter, sameOrigin } from "@/server/request-guard";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Best-effort abuse guard. Serverless instances don't share memory, so this is a
-// speed bump, not a wall — the real limits are the single-use, short-lived token
-// and the hard call length.
-const WINDOW_MS = 10 * 60 * 1000;
-const MAX_PER_WINDOW = 6;
-const hits = new Map<string, number[]>();
-
-function rateLimited(ip: string) {
-  const now = Date.now();
-  const recent = (hits.get(ip) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX_PER_WINDOW) return true;
-  recent.push(now);
-  hits.set(ip, recent);
-  if (hits.size > 5000) hits.clear();
-  return false;
-}
-
-function sameOrigin(request: Request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return false;
-  const host = request.headers.get("x-forwarded-host") ?? request.headers.get("host");
-  const allowed = (process.env.ALLOWED_ORIGINS ?? "").split(",").map((s) => s.trim()).filter(Boolean);
-  try {
-    const o = new URL(origin);
-    return o.host === host || allowed.includes(o.origin);
-  } catch {
-    return false;
-  }
-}
+// Speed bump only: the real limits are the single-use, short-lived token and the hard call length.
+const rateLimited = createRateLimiter(10 * 60 * 1000, 6);
 
 export async function POST(request: Request) {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -44,8 +18,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "forbidden" }, { status: 403 });
   }
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-  if (rateLimited(ip)) {
+  if (rateLimited(clientIp(request))) {
     return Response.json({ error: "rate_limited" }, { status: 429 });
   }
 

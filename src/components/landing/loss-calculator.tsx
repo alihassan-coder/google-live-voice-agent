@@ -1,8 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState } from "react";
 import { useNiche } from "@/components/niche-context";
-import { Container, Eyebrow } from "@/components/ui/primitives";
+import { Container, Eyebrow, buttonClass } from "@/components/ui/primitives";
 
 const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 const whole = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
@@ -62,6 +63,14 @@ function Calculator({ defaultJob }: { defaultJob: number }) {
               {whole.format(calls)} calls × {missed}% missed × {close}% close × {money.format(job)} × 12 months ={" "}
               {whole.format(lostJobsPerYear)} jobs a year
             </p>
+            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+              <Link href="/contact" className={buttonClass("primary", "lg")}>
+                Stop missing these calls
+              </Link>
+              <Link href="/demo" className={buttonClass("secondary", "lg")}>
+                Hear how it answers one
+              </Link>
+            </div>
           </div>
         </div>
       </Container>

@@ -1,4 +1,4 @@
-import type { ComponentProps, ReactNode } from "react";
+﻿import type { ComponentProps, ReactNode } from "react";
 
 export function cx(...parts: Array<string | false | null | undefined>) {
   return parts.filter(Boolean).join(" ");
@@ -28,7 +28,7 @@ const buttonStyles: Record<ButtonVariant, string> = {
 
 export function buttonClass(variant: ButtonVariant = "primary", size: "md" | "lg" = "md") {
   return cx(
-    "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-[background,color,border,transform] duration-150 disabled:opacity-50 disabled:pointer-events-none select-none",
+    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-[background,color,border,transform] duration-150 disabled:opacity-50 disabled:pointer-events-none select-none",
     size === "lg" ? "h-12 px-6 text-[15px]" : "h-10 px-4 text-sm",
     buttonStyles[variant],
   );
@@ -42,3 +42,4 @@ export function Button({
 }: ComponentProps<"button"> & { variant?: ButtonVariant; size?: "md" | "lg" }) {
   return <button type="button" className={cx(buttonClass(variant, size), className)} {...props} />;
 }
+

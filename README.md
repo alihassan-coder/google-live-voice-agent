@@ -27,7 +27,8 @@ src/
     layout.tsx, page.tsx   Fonts, metadata, page composition
     globals.css            Design tokens (colors per trade, fonts)
   components/
-    landing/               Hero, how it works, calculator, FAQ, footer
+    landing/               Hero, demo teaser, calculator, FAQ, header, footer
+    leads/                 Leads table, dashboard, detail drawer
     demo/                  Live demo: call panel + owner panel
     ui/                    Small shared primitives
     niche-context.tsx      Roofing / Water damage switch (re-themes the page)
@@ -77,6 +78,18 @@ Open http://localhost:3000 in Chrome and allow the microphone. Headphones give t
 4. When the agent learns something it calls a tool (`update_caller`, `set_urgency`,
    `get_open_slots`, `book_inspection`, `notify_owner`, `end_call`). The browser
    applies it to the owner panel and answers the tool call.
+
+## Pages
+
+| Page | What it's for |
+|---|---|
+| `/` | Landing page: hero, 3-step teaser with latest leads, loss calculator, FAQ |
+| `/demo` | Live call + owner view + leads table that fills in during the call |
+| `/leads` | Owner dashboard: stats, filters, all leads, detail drawer with transcript |
+| `/contact` | "Get started" form. Emails you via Resend if `RESEND_API_KEY` is set, otherwise offers Gmail / email app / copy |
+
+Example leads live in `src/lib/demo/call-records.ts` (`seedRows`). Calls made on `/demo`
+are saved in the visitor's own browser only.
 
 ## Security notes
 

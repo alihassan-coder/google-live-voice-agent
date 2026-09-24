@@ -1,159 +1,43 @@
-"use client";
-
-import { motion } from "motion/react";
-import { useNiche } from "@/components/niche-context";
-import { Container, Eyebrow, buttonClass } from "@/components/ui/primitives";
-
-const copy = {
-  roofing: {
-    time: "9:47",
-    headline: ["It's 9:47pm.", "A ceiling is leaking.", "Who picks up?"],
-    caller: "(813) 555-0142",
-    text: "Hi, this is Bayshore Roofing — sorry we missed you. Is water coming in right now?",
-    reply: "yes, through the kitchen ceiling",
-  },
-  water: {
-    time: "2:13",
-    headline: ["It's 2:13am.", "A pipe just burst.", "Who picks up?"],
-    caller: "(727) 555-0198",
-    text: "Hi, this is Gulf Coast Restoration — sorry we missed you. Is the water still running?",
-    reply: "yes it's all over the floor",
-  },
-} as const;
+﻿import Link from "next/link";
+import { Container, buttonClass } from "@/components/ui/primitives";
 
 export function Hero() {
-  const { niche, persona } = useNiche();
-  const c = copy[niche];
-
   return (
-    <section id="top" className="relative overflow-hidden border-b border-line">
-      <Container className="grid gap-12 pt-14 pb-16 sm:pt-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-16 lg:pb-24">
+    <section className="sales-hero" id="top">
+      <Container className="grid items-center gap-12 py-14 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:py-20">
         <div>
-          <Eyebrow>For roofing &amp; water damage companies</Eyebrow>
-          <h1 className="mt-5 font-display text-[40px] leading-[1.02] font-medium tracking-[-0.02em] text-ink sm:text-6xl lg:text-[68px]">
-            {c.headline.map((line, i) => (
-              <span key={line} className={i === 2 ? "block text-accent" : "block"}>
-                {line}
-              </span>
-            ))}
-          </h1>
-          <p className="mt-6 max-w-xl text-[17px] leading-relaxed text-ink-2">
-            {niche === "roofing"
-              ? "When your crews are on a roof or the office is closed, an assistant answers the call"
-              : "When your techs are on a job or it's the middle of the night, an assistant answers the call"}{" "}
-            — gets the address, the damage and the insurance details, books the {niche === "roofing" ? "inspection" : "visit"},
-            and texts you the job.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <a href="#demo" className={buttonClass("primary", "lg")}>
-              <PhoneGlyph />
-              Call the demo
-            </a>
-            <a href="#math" className={buttonClass("secondary", "lg")}>
-              See what you&apos;re losing
-            </a>
+          <p className="mb-6 flex items-center gap-2 text-xs font-semibold tracking-[0.09em] text-ink-2 uppercase"><span className="size-2 rounded-full bg-accent" /> For roofers &amp; restoration teams</p>
+          <h1 className="sales-headline">You do the job.<br />We answer<br /><span className="text-accent">the next call.</span></h1>
+          <p className="mt-6 max-w-[420px] text-lg leading-relaxed text-ink-2">Your AI receptionist answers after hours, captures the details, and books the next step.</p>
+          <div className="mt-8 flex flex-wrap items-center gap-5">
+            <Link href="/demo" className={buttonClass("primary", "lg")}>Try a live call <span aria-hidden>↗</span></Link>
+            <a href="#how-it-works" className="text-sm font-semibold text-ink underline decoration-line-2 underline-offset-4">How it works</a>
           </div>
-          <p className="mt-6 text-sm text-ink-3">Works on the number you already have. Nothing to install.</p>
+          <p className="mt-4 text-xs text-ink-3">No signup. Try it right in your browser.</p>
         </div>
-
-        <PhoneMock key={niche} {...c} business={persona.business} />
+        <div className="call-preview">
+          <div className="flex items-center justify-between gap-3 border-b border-white/10 pb-5">
+            <span className="text-[11px] font-medium tracking-widest text-slate-300 uppercase">Your business. After hours.</span>
+            <span className="shrink-0 text-xs text-slate-400">9:47 PM</span>
+          </div>
+          <div className="flex items-center gap-4 pt-6">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-white/10 text-orange-300"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" aria-hidden><path d="M5 3h3l2 5-2.5 1.5a12 12 0 0 0 7 7L16 14l5 2v3a2 2 0 0 1-2 2A18 18 0 0 1 3 5a2 2 0 0 1 2-2Z" /></svg></span>
+            <div><p className="text-lg font-semibold text-white">A customer calls.</p><p className="mt-0.5 text-sm text-slate-400">Your assistant picks up.</p></div>
+          </div>
+          <div className="my-6 flex h-14 items-center justify-center gap-[5px]" aria-hidden>{[12,20,14,30,42,24,38,52,30,44,20,36,50,28,40,18,30,46,24,36,14,22,12].map((height, i) => <span key={i} className="w-1.5 rounded-full bg-orange-400" style={{height, opacity: 0.45 + (i % 4) * 0.16}} />)}</div>
+          <div className="space-y-3 text-sm leading-relaxed">
+            <p className="mr-6 rounded-2xl rounded-bl-sm bg-white/10 px-4 py-3 text-slate-200">“My roof is leaking. Can someone come tomorrow?”</p>
+            <p className="ml-6 rounded-2xl rounded-br-sm border border-orange-400/25 bg-orange-400/10 px-4 py-3 text-orange-100">“I can help. What’s the property address?”</p>
+          </div>
+          <div className="mt-6 rounded-xl bg-white p-4 text-ink shadow-lg">
+            <div className="flex items-center gap-2 text-xs font-semibold text-good"><span className="grid size-5 place-items-center rounded-full bg-good-soft">✓</span> Inspection booked <span className="ml-auto font-normal text-ink-3">Example</span></div>
+            <p className="mt-2 text-sm font-semibold">Tomorrow, 8:00 AM</p>
+            <p className="mt-1 text-xs text-ink-2">Roof leak · Customer details ready for your team</p>
+          </div>
+          <p className="mt-4 text-center text-[11px] text-slate-400">Illustrative call · Experience it in the live demo</p>
+        </div>
       </Container>
     </section>
   );
 }
 
-function PhoneMock({
-  time,
-  caller,
-  text,
-  reply,
-  business,
-}: {
-  time: string;
-  caller: string;
-  text: string;
-  reply: string;
-  business: string;
-}) {
-  const pm = time === "9:47";
-  return (
-    <div className="mx-auto w-full max-w-[340px] lg:mx-0 lg:justify-self-end">
-      <div className="rounded-[40px] bg-night p-2.5 shadow-lift">
-        <div className="relative overflow-hidden rounded-[32px] bg-night-2 px-4 pt-3 pb-6 text-night-ink">
-          <div className="mx-auto mb-6 h-5 w-24 rounded-full bg-night" aria-hidden />
-          <div className="text-center">
-            <p className="text-[13px] text-night-ink-2">{pm ? "Tuesday, September 23" : "Wednesday, September 24"}</p>
-            <p className="mt-1 font-display text-[64px] leading-none font-light tabular">{time}</p>
-          </div>
-
-          <div className="mt-8 space-y-2.5">
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-              className="rounded-2xl bg-night-3/90 p-3"
-            >
-              <NoteHead app="Phone" when={`${time} ${pm ? "PM" : "AM"}`} />
-              <p className="mt-1 text-[14px] font-medium">Missed call</p>
-              <p className="text-[13px] text-night-ink-2">{caller}</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.9 }}
-              className="rounded-2xl bg-night-3/90 p-3"
-            >
-              <NoteHead app={`Messages · to ${caller}`} when="now" />
-              <p className="mt-1 text-[13px] leading-snug">{text}</p>
-              <p className="mt-1.5 font-mono text-[10px] tracking-wide text-night-ink-2 uppercase">Sent 6s after missed call</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 1.7 }}
-              className="ml-8 rounded-2xl bg-accent p-3 text-white"
-            >
-              <p className="text-[13px] leading-snug">{reply}</p>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 2.5 }}
-              className="rounded-2xl border border-night-line bg-night p-3"
-            >
-              <NoteHead app={business} when="now" />
-              <p className="mt-1 text-[13px] leading-snug">
-                New job booked · inspection {pm ? "tomorrow 8:00 AM" : "tech on the way"}. Owner notified.
-              </p>
-            </motion.div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function NoteHead({ app, when }: { app: string; when: string }) {
-  return (
-    <div className="flex items-center justify-between gap-3 text-[11px] text-night-ink-2">
-      <span className="truncate font-medium tracking-wide uppercase">{app}</span>
-      <span className="shrink-0">{when}</span>
-    </div>
-  );
-}
-
-function PhoneGlyph() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}

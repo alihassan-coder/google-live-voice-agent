@@ -1,16 +1,21 @@
 "use client";
 
 import { AnimatePresence, motion } from "motion/react";
+import Link from "next/link";
 import { useState } from "react";
+import { RecentLeads } from "@/components/leads/leads-dashboard";
 import { useNiche } from "@/components/niche-context";
-import { Button, Container, Eyebrow } from "@/components/ui/primitives";
+import { Button, Container, Eyebrow, buttonClass, cx } from "@/components/ui/primitives";
 import { useLiveCall } from "@/hooks/use-live-call";
+import { useRecordCall } from "@/hooks/use-record-call";
 import { useSampleCall } from "@/hooks/use-sample-call";
 import type { CallController, CallError } from "@/lib/demo/call-types";
 import { nicheOrder, personas } from "@/lib/demo/personas";
 import { CallPanel } from "./call-panel";
 import { NicheSwitch } from "./niche-switch";
 import { OwnerPanel } from "./owner-panel";
+
+const money = new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 const errorCopy: Record<CallError, { title: string; body: string }> = {
   mic_denied: {
@@ -43,6 +48,57 @@ function isActive(call: CallController) {
   return call.status === "mic" || call.status === "connecting" || call.status === "live" || call.status === "ending";
 }
 
+const stepLabels = [
+  { title: "Start the call", body: "Press \"Start the call\"" },
+  { title: "Talk to the receptionist", body: "Answer her questions out loud" },
+  { title: "Job booked", body: "The owner gets a text" },
+];
+
+/** Where the caller is in the call, as a simple 1-2-3 so anyone can follow along. */
+function Steps({ call }: { call: CallController }) {
+  const done = Boolean(call.lead.booked) || call.status === "ended";
+  const current = done ? 2 : isActive(call) ? 1 : 0;
+  return (
+    <ol className="grid grid-cols-3 gap-2 sm:gap-3" aria-label="Call progress">
+      {stepLabels.map((s, i) => {
+        const complete = i < current || (done && i === 2);
+        const active = i === current && !complete;
+        return (
+          <li
+            key={s.title}
+            aria-current={active ? "step" : undefined}
+            className={cx(
+              "rounded-xl border px-3 py-2.5 transition-colors duration-300 sm:px-4 sm:py-3",
+              complete ? "border-good/30 bg-good-soft" : active ? "border-accent bg-card shadow-card" : "border-line bg-paper/60",
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={cx(
+                  "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                  complete ? "bg-good text-white" : active ? "bg-accent text-white" : "bg-paper-2 text-ink-3",
+                )}
+              >
+                {complete ? (
+                  <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={2.2} aria-hidden>
+                    <path d="M3 8.5l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                ) : (
+                  i + 1
+                )}
+              </span>
+              <span className={cx("text-[13px] font-medium leading-tight sm:text-sm", complete || active ? "text-ink" : "text-ink-3")}>
+                {s.title}
+              </span>
+            </div>
+            <p className="mt-1 hidden pl-8 text-xs text-ink-3 sm:block">{s.body}</p>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export function LiveDemo() {
   const { niche, persona, setNiche } = useNiche();
   const [mode, setMode] = useState<"live" | "sample">("live");
@@ -50,6 +106,8 @@ export function LiveDemo() {
   const sample = useSampleCall(niche);
   const call = mode === "live" ? live : sample;
   const busy = isActive(call);
+  useRecordCall(live, niche);
+  useRecordCall(sample, niche);
 
   const stopAll = () => {
     for (const c of [live, sample]) {
@@ -100,20 +158,27 @@ export function LiveDemo() {
           Start the call
         </Button>
         <p className="text-center text-xs text-night-ink-2">Uses your microphone. Headphones sound best.</p>
-        <button
-          type="button"
+        <Button
+          variant="ghost"
           onClick={startSample}
-          className="text-sm text-night-ink-2 underline decoration-night-line underline-offset-4 hover:text-night-ink"
+          className="w-full border border-night-line text-night-ink hover:bg-night-3 hover:text-night-ink sm:w-auto"
         >
-          No mic? Watch a sample call
-        </button>
+          In the office? Watch a 60-second sample call
+        </Button>
       </div>
     </div>
   );
 
   const ended = (
-    <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-      <Button onClick={mode === "live" ? startLive : startSample} className="w-full sm:w-auto">
+    <div className="flex flex-col items-center gap-3 sm:flex-row sm:flex-wrap sm:justify-center">
+      <Link href="/contact" className={cx(buttonClass("primary", "md"), "w-full sm:w-auto")}>
+        Get this on my number
+      </Link>
+      <Button
+        variant="ghost"
+        onClick={mode === "live" ? startLive : startSample}
+        className="w-full text-night-ink-2 hover:bg-night-3 hover:text-night-ink sm:w-auto"
+      >
         Call again
       </Button>
       <Button
@@ -138,20 +203,26 @@ export function LiveDemo() {
   const err = call.status === "error" && call.error ? errorCopy[call.error] : null;
 
   return (
-    <section id="demo" className="scroll-mt-16 border-y border-line bg-paper-2/60 py-16 sm:py-24">
+    <section id="demo" className="py-10 sm:py-14">
       <Container>
         <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <Eyebrow>Live demo · {persona.business}</Eyebrow>
-            <h2 className="mt-3 font-display text-[34px] leading-[1.08] tracking-tight text-ink sm:text-[44px]">
-              Call the demo. Talk to it like a homeowner would.
-            </h2>
+            <Eyebrow>Live call · {persona.business}</Eyebrow>
+            <h1 className="mt-3 font-display text-[34px] leading-[1.08] tracking-tight text-ink sm:text-[44px]">
+              Meet your next receptionist.
+            </h1>
             <p className="mt-3 max-w-xl text-[15px] text-ink-2">
-              On the left is the call. On the right is what the owner gets while it&apos;s happening — no app to open,
-              nothing to type.
+              Start a call. Play the customer. Watch your lead appear.
             </p>
           </div>
-          <NicheSwitch onChange={onNicheChange} disabled={busy} className="self-start md:self-auto" />
+          <div className="flex flex-col gap-1.5 self-start md:items-end md:self-auto">
+            <span className="text-xs text-ink-3">Pick a business</span>
+            <NicheSwitch onChange={onNicheChange} disabled={busy} />
+          </div>
+        </div>
+
+        <div className="mt-8">
+          <Steps call={call} />
         </div>
 
         <AnimatePresence>
@@ -198,7 +269,58 @@ export function LiveDemo() {
             <OwnerPanel call={call} persona={persona} />
           </div>
         </div>
+
+        <AnimatePresence>
+          {call.status === "ended" && call.lead.booked && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              className="mt-10 flex flex-col gap-5 rounded-[22px] bg-night p-6 text-night-ink shadow-lift sm:p-8 md:flex-row md:items-center md:justify-between"
+            >
+              <div className="max-w-xl">
+                <p className="font-mono text-[11px] tracking-[0.14em] text-night-ink-2 uppercase">What just happened</p>
+                <p className="mt-2 font-display text-2xl leading-snug sm:text-3xl">
+                  That call booked {niche === "water" ? "a visit" : "an inspection"} on a job worth about{" "}
+                  {money.format(persona.jobValue)} — and nobody at the office picked up.
+                </p>
+                <p className="mt-2 text-[15px] text-night-ink-2">
+                  Picture that at 9:47 on a Tuesday night, on your number. I&apos;ll set it up and you test it first.
+                </p>
+              </div>
+              <Link href="/contact" className={cx(buttonClass("primary", "lg"), "shrink-0")}>
+                Get this on my number
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <div className="mt-14 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="flex items-center gap-2.5 font-display text-2xl text-ink">
+              Leads table
+              {busy && (
+                <span className="flex items-center gap-1.5 rounded-full bg-good-soft px-2.5 py-1 font-sans text-xs font-medium text-good">
+                  <span className="size-1.5 animate-pulse rounded-full bg-good" />
+                  Updating live
+                </span>
+              )}
+            </h2>
+            <p className="mt-1 text-sm text-ink-2">
+              {busy
+                ? "The highlighted row is your call. Watch each column fill in as you answer."
+                : "Start a call and a new row appears at the top. Click any row for the full details."}
+            </p>
+          </div>
+          <Link href="/leads" className={buttonClass("secondary", "md")}>
+            View all leads
+          </Link>
+        </div>
+        <div className="mt-5">
+          <RecentLeads limit={5} />
+        </div>
       </Container>
     </section>
   );
 }
+
