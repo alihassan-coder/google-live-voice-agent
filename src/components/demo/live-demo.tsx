@@ -142,28 +142,27 @@ export function LiveDemo() {
   };
 
   const idle = (
-    <div className="pt-2">
-      <div className="rounded-2xl border border-night-line bg-night-2 p-4">
-        <p className="font-mono text-[10px] tracking-[0.14em] text-night-ink-2 uppercase">Your role</p>
-        <p className="mt-2 text-[15px] leading-snug text-night-ink">{persona.scenario}</p>
-        <p className="mt-2 text-sm text-night-ink-2">
-          {persona.agentName} will pick up. Answer her questions the way a real homeowner would — interrupt, ramble, change your mind.
+    <div>
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+        <p className="text-[11px] font-semibold tracking-[0.12em] text-orange-200 uppercase">Try saying</p>
+        <p className="mt-2 text-base leading-relaxed text-white">
+          {niche === "water" ? "“A pipe just burst in my kitchen. Can you help?”" : "“My roof is leaking. Can I book an inspection?”"}
         </p>
       </div>
       <div className="mt-5 flex flex-col items-center gap-3">
-        <Button size="lg" onClick={startLive} className="w-full sm:w-auto">
+        <Button size="lg" onClick={startLive} className="call-start-button w-full">
           <svg viewBox="0 0 24 24" className="size-5" fill="currentColor" aria-hidden>
             <path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1L6.6 10.8Z" />
           </svg>
           Start the call
         </Button>
-        <p className="text-center text-xs text-night-ink-2">Uses your microphone. Headphones sound best.</p>
+        <p className="text-center text-xs text-night-ink-2">Allow your mic, then just talk naturally.</p>
         <Button
           variant="ghost"
           onClick={startSample}
-          className="w-full border border-night-line text-night-ink hover:bg-night-3 hover:text-night-ink sm:w-auto"
+          className="w-full border border-white/15 text-night-ink hover:bg-white/10 hover:text-white"
         >
-          In the office? Watch a 60-second sample call
+          <span aria-hidden>▷</span> Watch a sample instead
         </Button>
       </div>
     </div>

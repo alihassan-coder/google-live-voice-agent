@@ -130,3 +130,30 @@ body {
 @media (max-width: 380px) {
   .call-preview { padding: 20px; }
 }
+.warm-contact-button {
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #efcbb3;
+  border-radius: 14px;
+  background: #fff1e6;
+  color: #963c18;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 3px #9a411008;
+  transition: background 160ms, box-shadow 160ms, transform 160ms;
+}
+.warm-contact-button:hover {
+  background: #ffe5d2;
+  box-shadow: 0 5px 14px #9a411014;
+  transform: translateY(-1px);
+}
+.call-start-button {
+  height: 52px;
+  background: #db571e;
+  color: white;
+  box-shadow: 0 5px 22px #ed6c2626, inset 0 1px 0 #ffffff26;
+}
+.call-start-button:hover { background: #bf4212; }

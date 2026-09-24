@@ -71,7 +71,7 @@ export function OwnerPanel({ call, persona }: { call: CallController; persona: P
     <div className="rounded-[22px] border border-line bg-card shadow-lift">
       <div className="flex items-center justify-between gap-3 border-b border-line px-5 py-4">
         <div>
-          <p className="font-display text-lg leading-tight text-ink">What {persona.ownerName} sees, live</p>
+          <p className="text-lg font-semibold leading-tight tracking-tight text-ink">Your next lead, live</p>
           <p className="mt-0.5 text-[13px] text-ink-3">{persona.business} · owner dashboard</p>
         </div>
         <span
@@ -87,9 +87,10 @@ export function OwnerPanel({ call, persona }: { call: CallController; persona: P
 
       {!started && log.length === 0 ? (
         <div className="px-5 py-10 text-center">
-          <p className="mx-auto max-w-xs text-[15px] text-ink-2">As the caller talks, this fills in on its own.</p>
+          <span aria-hidden className="mx-auto mb-5 grid size-12 place-items-center rounded-2xl bg-accent-soft text-2xl text-accent">↗</span>
+          <p className="mx-auto max-w-xs text-lg font-semibold text-ink">You talk. We take the notes.</p>
           <p className="mx-auto mt-2 max-w-xs text-sm text-ink-3">
-            Name, address, what happened, how urgent it is, and the booked inspection — before anyone at the office wakes up.
+            Start a call to see the customer details appear here.
           </p>
           <dl className="mx-auto mt-6 max-w-sm text-left opacity-60">
             {FIELDS.slice(0, 3).map((f) => (

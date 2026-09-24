@@ -120,21 +120,22 @@ export function CallPanel({
   }, [call.lines.length, lastText]);
 
   return (
-    <div className="flex h-[580px] flex-col overflow-hidden rounded-[22px] sm:h-[620px] bg-night text-night-ink shadow-lift ring-1 ring-night-line">
+    <div className="flex flex-col overflow-hidden rounded-[28px] bg-[linear-gradient(145deg,#1d304b,#101c2e)] text-night-ink shadow-lift ring-1 ring-night-line">
       {/* Caller ID header */}
-      <div className="flex items-start justify-between gap-3 border-b border-night-line px-5 pt-5 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 px-6 py-5">
         <div className="min-w-0">
-          <p className="font-mono text-[11px] tracking-[0.12em] text-night-ink-2 uppercase">
-            {persona.business} · after-hours line
+          <p className="text-sm font-medium text-night-ink">
+            {persona.business}
           </p>
-          <p className="mt-1 text-sm text-night-ink-2">
+          <p className="mt-1 flex items-center gap-2 text-xs text-night-ink-2">
+            {call.status === "idle" && <span className="size-1.5 rounded-full bg-emerald-300" aria-hidden />}
             <StatusLine call={call} />
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1.5">
           {sample && (
             <span className="rounded-full border border-night-line px-2.5 py-1 font-mono text-[10px] tracking-wide text-night-ink-2 uppercase">
-              Sample call — recorded script
+              Sample call
             </span>
           )}
           <AnimatePresence>
@@ -152,34 +153,34 @@ export function CallPanel({
       </div>
 
       {/* Agent identity + waveform */}
-      <div className="flex flex-col items-center px-5 pt-6 pb-4">
-        <div className="relative flex size-16 items-center justify-center">
+      <div className="flex flex-col items-center px-6 pt-7 pb-5">
+        <div className="relative flex size-20 items-center justify-center">
           {(connecting || (inCall && call.speaking === "agent")) && (
             <>
               <span className="absolute inset-0 animate-pulse-ring rounded-full bg-accent/40" />
               <span className="absolute inset-0 animate-pulse-ring rounded-full bg-accent/30 [animation-delay:0.6s]" />
             </>
           )}
-          <span className="relative flex size-16 items-center justify-center rounded-full bg-night-3 font-display text-2xl text-night-ink ring-1 ring-night-line">
+          <span className="relative flex size-20 items-center justify-center rounded-[26px] border border-white/20 bg-[linear-gradient(145deg,#455d7b,#233953)] text-3xl font-medium text-white shadow-lg">
             {persona.agentName.charAt(0)}
           </span>
         </div>
-        <p className="mt-3 text-sm text-night-ink">
+        <p className="mt-4 text-xl font-semibold tracking-tight text-night-ink">
           {persona.agentName}
-          <span className="text-night-ink-2"> · answers for {persona.ownerName}</span>
         </p>
-        <Waveform levels={call.levels} active={inCall} className="mt-4 w-full max-w-xs" />
+        <p className="mt-1 text-sm text-night-ink-2">Your AI receptionist</p>
+        {call.status !== "idle" && <Waveform levels={call.levels} active={inCall} className="mt-4 w-full max-w-xs" />}
       </div>
 
+      {call.status === "idle" && <div className="px-6 pb-6">{idleSlot}</div>}
       {/* Captions */}
+      {call.status !== "idle" && (
       <div
         ref={scroller}
         aria-live="polite"
         aria-label="Live captions"
-        className="relative min-h-0 flex-1 space-y-3 overflow-y-auto px-5 pb-4 [scrollbar-width:thin]"
-        style={{ maxHeight: 300 }}
+        className="relative h-64 space-y-3 overflow-y-auto px-6 pb-5 [scrollbar-width:thin]"
       >
-        {call.status === "idle" && idleSlot}
         {connecting && call.lines.length === 0 && (
           <p className="pt-6 text-center text-sm text-night-ink-2">
             {call.status === "mic" ? "Allow the microphone to start the call." : "Ringing…"}
@@ -209,9 +210,10 @@ export function CallPanel({
           </motion.div>
         ))}
       </div>
+      )}
 
       {/* Controls */}
-      <div className="border-t border-night-line px-5 py-4">
+      <div className="shrink-0 border-t border-white/10 bg-black/10 px-6 py-4">
         {inCall || connecting ? (
           <div className="flex items-center justify-center gap-5">
             {call.kind === "live" && (
@@ -226,8 +228,8 @@ export function CallPanel({
         ) : call.status === "ended" && endSlot ? (
           endSlot
         ) : (
-          <p className="text-center font-mono text-[11px] tracking-wide text-night-ink-2 uppercase">
-            Calls are capped at 4 minutes
+          <p className="text-center text-xs text-night-ink-2">
+            No signup · Up to 4 minutes per call
           </p>
         )}
       </div>
