@@ -133,7 +133,7 @@ export function CallPanel({
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-end gap-1.5">
-          {sample && (
+          {sample && call.status !== "idle" && (
             <span className="rounded-full border border-night-line px-2.5 py-1 font-mono text-[10px] tracking-wide text-night-ink-2 uppercase">
               Sample call
             </span>

@@ -56,8 +56,8 @@ const stepLabels = [
 
 /** Where the caller is in the call, as a simple 1-2-3 so anyone can follow along. */
 function Steps({ call }: { call: CallController }) {
-  const done = Boolean(call.lead.booked) || call.status === "ended";
-  const current = done ? 2 : isActive(call) ? 1 : 0;
+  const done = Boolean(call.lead.booked);
+  const current = done ? 2 : isActive(call) || call.status === "ended" ? 1 : 0;
   return (
     <ol className="grid grid-cols-3 gap-2 sm:gap-3" aria-label="Call progress">
       {stepLabels.map((s, i) => {
